@@ -25,13 +25,18 @@ umi.use(signerIdentity(signer));
   try {
     //change the image uri to your image uri obtained from nft_image.ts
     const image =
-      "https://gateway.irys.xyz/5EDyiNrMWfhjdsEwXLrwkHPwZoZB2m1A2Kudrfxo1tpr";
+      "https://gateway.irys.xyz/5qgrMBwfKMygHrnfUnExBsqpCjN1optbYFNHoDNYNMGn";
 
-    //json scheme : https://www.metaplex.com/docs/smart-contracts/core/json-schema
-    //change the metadata
-    // const metadata =
-    // const myUri =
-    // console.log(`metadata uri: ${myUri} `);
+    // json scheme : https://www.metaplex.com/docs/smart-contracts/core/json-schema
+    // change the metadata
+    const metadata =  {
+      "name": "Straw Hat Pirates Jolly Roger Luffy Drawn",
+      "description": "Initial jolly roger drawn by the captain Monkey.D.Luffy himself for the Straw Hat Pirates crew",
+      "image": image,
+      "category": "image",
+    }
+    const myUri = await umi.uploader.uploadJson(metadata)
+    console.log(`metadata uri: ${myUri} `);
   } catch (error) {
     console.log("error", error);
   }
