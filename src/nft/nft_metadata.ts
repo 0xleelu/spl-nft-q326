@@ -30,8 +30,8 @@ umi.use(signerIdentity(signer));
     // json scheme : https://www.metaplex.com/docs/smart-contracts/core/json-schema
     // change the metadata
     const metadata =  {
-      "name": "Straw Hat Pirates Jolly Roger Luffy Drawn",
-      "description": "Initial jolly roger drawn by the captain Monkey.D.Luffy himself for the Straw Hat Pirates crew",
+      "name": "luffy drawn nft with its updated name",
+      "description": "updating the metadata of nft",
       "image": image,
       "category": "image",
     }
