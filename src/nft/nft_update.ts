@@ -2,6 +2,7 @@ import { createUmi } from '@metaplex-foundation/umi-bundle-defaults'
 import { update, mplCore,fetchAsset } from '@metaplex-foundation/mpl-core'
 import { createSignerFromKeypair, signerIdentity } from '@metaplex-foundation/umi';
 import wallet from "../../devnet-wallet.json"
+import { base58 } from '@metaplex-foundation/umi/serializers';
 
 const umi = createUmi('https://api.devnet.solana.com').use(mplCore());
 const keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
@@ -19,7 +20,8 @@ umi.use(signerIdentity(signer));
         uri: 'https://gateway.irys.xyz/DYWuqYiG4RA6rd8MCZEgguNLQVLg5wSo9QwPUAW3cex3',
       }).sendAndConfirm(umi)
 
-      console.log(`Asset updated successfully ${result}`);
+      const signature = base58.deserialize(result.signature)[0];
+      console.log(`Asset updated successfully ${signature}`);
     } catch (e) {
       console.log(`error ${e}`);
     }
