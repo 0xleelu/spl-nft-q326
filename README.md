@@ -33,8 +33,10 @@ Place your image at the project root.
 
 ```
 root/
-└── image.jpeg   ← here
+└── og_strawhat.png   ← here
 ```
+
+`nft_image.ts` reads this file by name — update the path and the `createGenericFile` mime type in that script if you use a different image.
 
 ---
 
@@ -68,10 +70,10 @@ Uses **@solana/kit** and **mpl-core** via UMI. Images and metadata are stored on
 | `nft_metadata.ts` | `npm run nft:metadata` | Builds the metadata JSON and uploads it, logs the metadata URI |
 | `nft_mint.ts` | `npm run nft:mint` | Mints the NFT on-chain using the metadata URI, with your wallet set as update authority |
 | `nft_update.ts` | `npm run nft:update` | Fetches the existing on-chain asset, then updates its name and metadata URI as the update authority |
-| `nft_ownership_transfer.ts` | `npm run nft:transfer` | Transfers an existing NFT asset to a new owner wallet (optional extension task) |
+| `nft_transfer_ownership.ts` | `npm run nft:transfer` | Transfers an existing NFT asset to a new owner wallet (optional extension task) |
 
 
-Run them in order. Paste the URI logged by each step into the next script before running it. For `nft_update.ts`, paste the asset address logged by `nft_mint.ts` into the `fetchAsset` call before running. For `nft_ownership_transfer.ts`, paste the asset address and the recipient wallet's public key before running..
+Run them in order. Paste the URI logged by each step into the next script before running it. For `nft_update.ts`, paste the asset address logged by `nft_mint.ts` into the `fetchAsset` call before running. For `nft_transfer_ownership.ts`, paste the asset address and the recipient wallet's public key before running..
 
 ---
 ## Notes
@@ -141,7 +143,7 @@ const signature = base58.deserialize(result.signature)[0];
 ### Security
 `devnet-wallet.json` contains a **raw private key** in plaintext byte-array form. It is gitignored and must never be committed, shared, or reused for a mainnet wallet.
 
-### Transferring ownership (`nft_ownership_transfer.ts`)
+### Transferring ownership (`nft_transfer_ownership.ts`)
 This script started as a copy of `nft_update.ts`'s boilerplate — same Umi setup, same signer identity block, same `fetchAsset` call to load the full asset object first. The only functional changes were swapping `update(...)` for mpl-core's `transfer(...)`, and replacing the `name`/`uri` update fields with a `newOwner` field:
 
 ```ts
@@ -157,3 +159,26 @@ Two things worth noting from reusing the pattern:
 - **`newOwner` requires the typed `PublicKey` type, not a raw string** — same distinction seen earlier with `updateAuthority`. The `publicKey(...)` helper from `@metaplex-foundation/umi` wraps a base58 string into that type.
 
 One gotcha hit while testing: the base58 signature decode step was added *after* the transfer transaction had already been sent, so the first run logged the raw `Uint8Array` signature instead of a readable string. Since the transaction was already confirmed on-chain, the fix didn't require re-running the transfer — the same raw bytes were decoded after the fact with `base58.deserialize(rawBytes)[0]` to recover the readable signature for the explorer link.
+
+### Screenshots
+
+All screenshots live under [`images/`](images), split into `images/online/` (explorer / Metaplex Core views) and `images/terminal ss/` (CLI output).
+
+**Online — SPL Token**
+- Minting (Solscan): ![spltoken-minting solscan](images/online/spltoken-minting%20solscan.png)
+- Transfer receipt (Solscan): ![spltoken-transferring receipt solscan](images/online/spltoken-transferring%20receipt%20solscan.png)
+
+**Online — NFT**
+- Minting (Metaplex Core): ![nft-minting nft metaplex core](images/online/nft-minting%20nft%20metaplex%20core.png)
+- Updating name and metadata (Metaplex Core): ![nft-updating name and metadata metaplex core](images/online/nft-updating%20name%20and%20metadata%20metaplex%20core.png)
+- Transferring owner (Solscan): ![nft-transferring owner solscan](images/online/nft-transferring%20owner%20solscan.png)
+
+**Terminal — SPL Token**
+- Mint: ![spltoken-mint successful ss](images/terminal%20ss/spltoken-mint%20successful%20ss.png)
+- Transfer: ![spltoken-transferring successful ss](images/terminal%20ss/spltoken-transferring%20successful%20ss.png)
+
+**Terminal — NFT**
+- Minting: ![nft-minting successful ss](images/terminal%20ss/nft-minting%20successful%20ss.png)
+- Transferring: ![nft-transferring successful ss](images/terminal%20ss/nft-transferring%20successful%20ss.png)
+- Transferring (alt run): ![nft-transferring successful ss(1)](images/terminal%20ss/nft-transferring%20successful%20ss%281%29.png)
+- Transferring owner: ![nft-transferring owner successful](images/terminal%20ss/nft-transferring%20owner%20successful.png)
